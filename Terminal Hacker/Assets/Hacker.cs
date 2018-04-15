@@ -13,12 +13,7 @@ public class Hacker : MonoBehaviour
     //Game States
     int level;
     string password;
-
-    // Debugging
-    void Update()
-    {
-        // EMPTY
-    }
+    string system;
 
     // Use this for initialization
     void Start()
@@ -34,7 +29,6 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine(greeting);
         Terminal.WriteLine("//Firewall breached... " +
             "\nWhich system would you like to access?" +
-            "\n" +
             "\nEnter 1 for Local Library" +
             "\nEnter 2 for Raccoon City PD" +
             "\nEnter 3 for Umbrella Laboratories" +
@@ -50,11 +44,11 @@ public class Hacker : MonoBehaviour
         }
         else if (currentScreen == Screen.MainMenu)
         {
-            RunMainMenu(input);
+            SelectLevel(input);
         }
         else if (currentScreen == Screen.Password)
         {
-            PasswordGuess(input);
+            CheckPassword(input);
         }
         else if (currentScreen == Screen.Win)
         {
@@ -62,14 +56,13 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    // Take the users input
-    void RunMainMenu(string input)
+    // Validate input
+    void SelectLevel(string input)
     {
         bool isValidLevelNumber = (input == "1" || input == "2" || input == "3");
         if (isValidLevelNumber)
         {
-            level = int.Parse(input);
-            DisplayPassword();
+            SetLevel(input);
         }
         else if (input == "zombies")
         {
@@ -81,12 +74,36 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    //Display to the user what level they have selected and request a password before taking input
-    void DisplayPassword()
+    // Sets the level
+    void SetLevel(string input)
+    {
+        level = int.Parse(input);
+        SetSystem();
+        SetPassword("Please enter password. Hint: " +
+            "\n");
+    }
+
+    // Set the system the user is in to display to them
+    void SetSystem()
+    {
+        if (level == 1)
+        {
+            system = "Library";
+        }
+        else if (level == 2)
+        {
+            system = "Police Station";
+        }
+        else if (level == 3)
+        {
+            system = "Umbrella Laboratories";
+        }
+    }
+
+    //Set the password
+    void SetPassword(string hint)
     {
         currentScreen = Screen.Password;
-        Terminal.ClearScreen();
-        Terminal.WriteLine("Please enter password");
         switch (level)
         {
             case 1:
@@ -102,28 +119,45 @@ public class Hacker : MonoBehaviour
                 Debug.LogError("ERROR NO PASSWORD");
                 break;
         }
+        DisplayHint(hint);
+    }
+
+    //Display the hint
+    void DisplayHint(string hint)
+    {
+        Terminal.ClearScreen();
+        Terminal.WriteLine(system + " Acessed" +
+            "\nEnter 'menu' to return to root");
+        Terminal.WriteLine(hint + password.Anagram());
     }
 
     // Take the users input and check if it is a valid password
-    void PasswordGuess(string input)
+    void CheckPassword(string input)
     {
         if (input == password)
         {
+            currentScreen = Screen.Win;
             WinScreen();
         }
         else
         {
-            Terminal.ClearScreen();
-            ShowMainMenu("Incorrect, try again");
-            DisplayPassword();
+            SetPassword("Incorrect, new hint: ");
         }
     }
 
     //Win screen
     void WinScreen()
     {
-        currentScreen = Screen.Win;
         Terminal.ClearScreen();
-        Terminal.WriteLine("You're in! Press Enter to continue.");
+        Terminal.WriteLine(@"
+You're in! Press Enter to continue.      
+      _____
+    ,'   Y `.
+   /         \
+   \ ()  ()  /
+    `. /\  ,'
+     | ""  |
+     [][][]
+");
     }
 }
