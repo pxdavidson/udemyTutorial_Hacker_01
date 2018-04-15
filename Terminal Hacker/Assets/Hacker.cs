@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
@@ -16,6 +13,12 @@ public class Hacker : MonoBehaviour
     //Game States
     int level;
     string password;
+
+    // Debugging
+    void Update()
+    {
+        // EMPTY
+    }
 
     // Use this for initialization
     void Start()
@@ -53,9 +56,13 @@ public class Hacker : MonoBehaviour
         {
             PasswordGuess(input);
         }
+        else if (currentScreen == Screen.Win)
+        {
+            ShowMainMenu("hacker.exe_Root");
+        }
     }
 
-    // Take the users input and allow them to select options from the ShowMainMenu method
+    // Take the users input
     void RunMainMenu(string input)
     {
         bool isValidLevelNumber = (input == "1" || input == "2" || input == "3");
@@ -83,13 +90,13 @@ public class Hacker : MonoBehaviour
         switch (level)
         {
             case 1:
-                password = level1Passwords[2]; // todo: make random
+                password = level1Passwords[Random.Range(0, level1Passwords.Length)];
                 break;
             case 2:
-                password = level2Passwords[2]; // todo: make random
+                password = level2Passwords[Random.Range(0, level2Passwords.Length)];
                 break;
             case 3:
-                password = level3Passwords[2]; // todo: make random
+                password = level3Passwords[Random.Range(0, level3Passwords.Length)];
                 break;
             default:
                 Debug.LogError("ERROR NO PASSWORD");
@@ -117,6 +124,6 @@ public class Hacker : MonoBehaviour
     {
         currentScreen = Screen.Win;
         Terminal.ClearScreen();
-        Terminal.WriteLine("You're in! Press any key to continue.");
+        Terminal.WriteLine("You're in! Press Enter to continue.");
     }
 }
